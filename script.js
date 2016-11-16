@@ -1,10 +1,10 @@
 //module
+// an array with all of our cart items
 var cart = [];
 
 
 var ShoppingCart = function() {
 
-	// an array with all of our cart items
 
 	var total = 0;
 
@@ -20,9 +20,13 @@ var ShoppingCart = function() {
 			  $('.cart-list').append(newHtml);
 		  }
 
-		$('.total').append(total);
-
+		displayTotal();
 	};
+
+	var displayTotal = function() {
+		$('.total').empty();
+		$('.total').append(total);
+	}
 
 
 	var addItem = function (item) {
@@ -43,28 +47,23 @@ var ShoppingCart = function() {
 			cart.push(item);
 		}
 
-			total+= item.price;
-	};
-
-	var getTotal = function() {
-		return total;
+			total += item.price;
 	};
 
 	var clearCart = function () {
 	  // TODO: finish
-	  // if(cart.length) {
-	  // 	cart = [];
-	  // }
+	  if(cart.length) {
+	  	cart = [];
+	  	total = 0;
+	  }
+	  updateCart();
 	};
 
 	return {
 		addItem:addItem,
-		getTotal:getTotal,
 		updateCart:updateCart,
 		clearCart:clearCart
 	};
-
-
 };
 
 
@@ -96,7 +95,6 @@ $('.add-to-cart').on('click', function () {
 
   app.addItem(item);//push into array
 
-  // $('.total').html(app.getTotal());
   app.updateCart();
 });
 
