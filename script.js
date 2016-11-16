@@ -1,32 +1,106 @@
-// an array with all of our cart items
+//module
 var cart = [];
 
-var updateCart = function () {
-  // TODO: finish
-}
+
+var ShoppingCart = function() {
+
+	// an array with all of our cart items
+
+	var total = 0;
+
+	var updateCart = function () {
+	  // TODO: finish
+	  $('.cart-list').empty();
+
+		var source = $('#cart-template').html();
+		var template = Handlebars.compile(source);
+		  //fill shopping cart from main cart
+		for (var i = 0; i < cart.length; i++) {
+			  var newHtml = template(cart[i]);
+			  $('.cart-list').append(newHtml);
+		  }
+
+		$('.total').append(total);
+
+	};
 
 
-var addItem = function (item) {
-  // TODO: finish
-}
+	var addItem = function (item) {
+		var isExist = false;
+		console.log(total);
+		//check array for item
+		for(var i = 0; i < cart.length; i ++){
+			if(cart[i].name === item.name){
+				isExist = true;
+				cart[i].quantity ++;
+			}
+		}
 
-var clearCart = function () {
-  // TODO: finish
-}
+		//complex if statements
+		if(cart.length === 0){
+			cart.push(item);
+		}else if(!isExist){
+			cart.push(item);
+		}
 
+			total+= item.price;
+	};
+
+	var getTotal = function() {
+		return total;
+	};
+
+	var clearCart = function () {
+	  // TODO: finish
+	  // if(cart.length) {
+	  // 	cart = [];
+	  // }
+	};
+
+	return {
+		addItem:addItem,
+		getTotal:getTotal,
+		updateCart:updateCart,
+		clearCart:clearCart
+	};
+
+
+};
+
+
+var app = ShoppingCart();
+
+// update the cart as soon as the page loads!
+app.updateCart();
+
+//HANDLERS
 $('.view-cart').on('click', function () {
   // TODO: hide/show the shopping cart!
+  var isVisible = $('.shopping-cart').is(':visible');
+
+	if(!isVisible){
+		// show cart
+		$('.shopping-cart').show();
+	}else{
+		// hide cart
+		$('.shopping-cart').hide();
+	}
 });
 
 $('.add-to-cart').on('click', function () {
   // TODO: get the "item" object from the page
-  addItem(item);
-  updateCart();
+
+  var name = $(this).parent().prev().parent().data().name;
+  var price = $(this).parent().prev().parent().data().price;
+  var item = {name: name, price: price, quantity: 1};
+
+  app.addItem(item);//push into array
+
+  // $('.total').html(app.getTotal());
+  app.updateCart();
 });
 
 $('.clear-cart').on('click', function () {
-  clearCart();
+  app.clearCart();
 });
 
-// update the cart as soon as the page loads!
-updateCart();
