@@ -1,10 +1,8 @@
 //module
-// an array with all of our cart items
-var cart = [];
-
 
 var ShoppingCart = function() {
-
+	// an array with all of our cart items
+	var cart = [];
 
 	var total = 0;
 
@@ -26,28 +24,21 @@ var ShoppingCart = function() {
 	var displayTotal = function() {
 		$('.total').empty();
 		$('.total').append(total);
-	}
+	};
 
 
 	var addItem = function (item) {
-		var isExist = false;
-		console.log(total);
-		//check array for item
-		for(var i = 0; i < cart.length; i ++){
-			if(cart[i].name === item.name){
-				isExist = true;
-				cart[i].quantity ++;
-			}
-		}
 
-		//complex if statements
-		if(cart.length === 0){
-			cart.push(item);
-		}else if(!isExist){
-			cart.push(item);
-		}
+		var index = cart.indexOf(item);
 
-			total += item.price;
+		  if (index === -1) {
+            item.quantity = 1;
+            cart.push(item);
+        } else {
+            cart[index].quantity++;
+        }
+
+		total += item.price;
 	};
 
 	var clearCart = function () {
@@ -75,6 +66,8 @@ app.updateCart();
 //HANDLERS
 $('.view-cart').on('click', function () {
   // TODO: hide/show the shopping cart!
+  //fix this with remove and add  a new class
+  // and using the toggle function
   var isVisible = $('.shopping-cart').is(':visible');
 
 	if(!isVisible){
@@ -89,9 +82,9 @@ $('.view-cart').on('click', function () {
 $('.add-to-cart').on('click', function () {
   // TODO: get the "item" object from the page
 
-  var name = $(this).parent().prev().parent().data().name;
-  var price = $(this).parent().prev().parent().data().price;
-  var item = {name: name, price: price, quantity: 1};
+  var item = $(this).parent().prev().parent().data();
+  //var price = $(this).parent().prev().parent().data();
+  //var item = {name: name, price: price};
 
   app.addItem(item);//push into array
 
