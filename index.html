@@ -152,7 +152,11 @@
   </div>
 
   <script id="cart-template" type="text/x-handlebars-template">
-        <p>{{ name }}  ({{ quantity}}) - $ {{ price}}  </p>
+        <p  data-name="{{ name }}" data-price="{{ price }}">
+        <a class="remove" href="#"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+        {{ name }}  ({{ quantity}}) - $ {{ price }}
+        </p>
+
   </script>
 
   <script type="text/javascript" src="node_modules/handlebars/dist/handlebars.min.js"></script>

@@ -104,3 +104,7 @@ body {
 .clear-cart {
   width: 100%;
 }
+
+.remove {
+    padding-right: 6px;
+}

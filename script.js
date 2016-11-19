@@ -1,20 +1,41 @@
+// global function
+
+var bindRemoveItem = function() {
+	//remove item
+	$('.cart-list .remove').on('click', function() {
+		var itemData = $(this).parent('p').data();
+		app.removeItem(itemData);
+	});
+};
+
 //module
 var ShoppingCart = function() {
+
+	//variables
+
 	//local storage app key
 	var STORAGE_ID = 'shopping-cart';
-
-	var getFromLocalStorage = function() {
-		return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
-	};
-
-	// an array with all of our cart items
-	var cart = getFromLocalStorage();
+	var TOTAL_ID = 'total-cart';
 
 	//sum of total cart
-	var total = 0;
+	var cart = [],
+			total = 0;
+
+//functions
+	var getFromLocalStorage = function() {
+		cart = JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
+		total = JSON.parse(localStorage.getItem(TOTAL_ID) || 0);
+	};
+
+		//update total $ everytime a new product is added
+	var displayTotal = function() {
+		$('.total').empty();
+		$('.total').append(total);
+	};
 
 	var saveToLocalStorage = function() {
 		localStorage.setItem(STORAGE_ID, JSON.stringify(cart));
+		localStorage.setItem(TOTAL_ID, JSON.stringify(total));
 	};
 
 	//toggle functionality
@@ -22,7 +43,7 @@ var ShoppingCart = function() {
 		$('.shopping-cart').toggle('fast');
 	};
 
-	//keep up to date shopping card with changes
+	//keep up to date shopping card with changes in the DOM
 	var updateCart = function () {
 	  // TODO: finish
 	  $('.cart-list').empty();
@@ -34,30 +55,65 @@ var ShoppingCart = function() {
 			  var newHtml = template(cart[i]);
 			  $('.cart-list').append(newHtml);
 		  }
+
+		bindRemoveItem();
+		saveToLocalStorage();
 		 //show total of buy
 		displayTotal();
-	};
-	//update total $ everytime a new product is added
-	var displayTotal = function() {
-		$('.total').empty();
-		$('.total').append(total);
 	};
 
 	//add item to the shopping cart
 	var addItem = function (item) {
 
-		var index = cart.indexOf(item);
-					//product doesnt exist in cart
-		  if (index === -1) {
-            item.quantity = 1;
-            cart.push(item);
-        } else { //product already exist on cart
-            cart[index].quantity++;
-        }
+		var isItemExist = false;
+
+		//check if product exist
+		for (var i = 0; i < cart.length; i++) {
+			// product doesnt exist in cart
+		  if (item.name === cart[i].name) {
+		  		isItemExist = true;
+          cart[i].quantity++;
+          break;
+      }
+		}
+
+		//if product not found
+		if(!isItemExist){
+			item.quantity = 1;
+			cart.push(item);
+		}
+
+
     //add price of product to total
 		total += item.price;
 		saveToLocalStorage();
+		// update the total as soon as the cart get save in the local storage
+		displayTotal();
 	};
+
+	//remove item from cart
+	var removeItem = function(itemData) {
+
+		for (var i = 0; i < cart.length; i++) {
+			//check if product exist
+			if(itemData.name === cart[i].name) {
+				//recalculate the total when remove
+				total -= cart[i].price;
+				//reduce quantity from product
+				if(cart[i].quantity > 1) {
+						cart[i].quantity--;
+				}else{
+					//remove it from my cart
+					cart.splice(i, 1);
+				}
+
+				break;
+			}
+		}
+		updateCart();
+		saveToLocalStorage();
+	};
+
 	//empty cart if want to cancel purchase
 	var clearCart = function () {
 	  // TODO: finish
@@ -69,11 +125,16 @@ var ShoppingCart = function() {
 	  updateCart();
 	};
 
+	//init code
+	// an array with all of our cart items
+	getFromLocalStorage();
+
 	return {
 		addItem:addItem,
 		updateCart:updateCart,
 		clearCart:clearCart,
-		shoppingCartToggle:shoppingCartToggle
+		shoppingCartToggle:shoppingCartToggle,
+		removeItem:removeItem
 	};
 };
 
@@ -82,6 +143,7 @@ var app = ShoppingCart();
 
 // update the cart as soon as the page loads!
 app.updateCart();
+
 
 //HANDLERS
 $('.view-cart').on('click', function () {
@@ -108,5 +170,6 @@ $('.clear-cart').on('click', function () {
   app.clearCart();
 });
 
-app.updateCart();
+
+
 
