@@ -1,11 +1,28 @@
 //module
-
 var ShoppingCart = function() {
-	// an array with all of our cart items
-	var cart = [];
+	//local storage app key
+	var STORAGE_ID = 'shopping-cart';
 
+	var getFromLocalStorage = function() {
+		return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
+	};
+
+	// an array with all of our cart items
+	var cart = getFromLocalStorage();
+
+	//sum of total cart
 	var total = 0;
 
+	var saveToLocalStorage = function() {
+		localStorage.setItem(STORAGE_ID, JSON.stringify(cart));
+	};
+
+	//toggle functionality
+	var shoppingCartToggle = function() {
+		$('.shopping-cart').toggle('fast');
+	};
+
+	//keep up to date shopping card with changes
 	var updateCart = function () {
 	  // TODO: finish
 	  $('.cart-list').empty();
@@ -17,47 +34,50 @@ var ShoppingCart = function() {
 			  var newHtml = template(cart[i]);
 			  $('.cart-list').append(newHtml);
 		  }
-
+		 //show total of buy
 		displayTotal();
 	};
-
+	//update total $ everytime a new product is added
 	var displayTotal = function() {
 		$('.total').empty();
 		$('.total').append(total);
 	};
 
-
+	//add item to the shopping cart
 	var addItem = function (item) {
 
 		var index = cart.indexOf(item);
-
+					//product doesnt exist in cart
 		  if (index === -1) {
             item.quantity = 1;
             cart.push(item);
-        } else {
+        } else { //product already exist on cart
             cart[index].quantity++;
         }
-
+    //add price of product to total
 		total += item.price;
+		saveToLocalStorage();
 	};
-
+	//empty cart if want to cancel purchase
 	var clearCart = function () {
 	  // TODO: finish
 	  if(cart.length) {
 	  	cart = [];
 	  	total = 0;
 	  }
+	  saveToLocalStorage();
 	  updateCart();
 	};
 
 	return {
 		addItem:addItem,
 		updateCart:updateCart,
-		clearCart:clearCart
+		clearCart:clearCart,
+		shoppingCartToggle:shoppingCartToggle
 	};
 };
 
-
+//call my shopping cart module
 var app = ShoppingCart();
 
 // update the cart as soon as the page loads!
@@ -66,32 +86,27 @@ app.updateCart();
 //HANDLERS
 $('.view-cart').on('click', function () {
   // TODO: hide/show the shopping cart!
-  //fix this with remove and add  a new class
-  // and using the toggle function
-  var isVisible = $('.shopping-cart').is(':visible');
 
-	if(!isVisible){
-		// show cart
-		$('.shopping-cart').show();
-	}else{
-		// hide cart
-		$('.shopping-cart').hide();
-	}
+  app.shoppingCartToggle();
+
 });
 
 $('.add-to-cart').on('click', function () {
   // TODO: get the "item" object from the page
 
   var item = $(this).parent().prev().parent().data();
-  //var price = $(this).parent().prev().parent().data();
-  //var item = {name: name, price: price};
 
   app.addItem(item);//push into array
-
   app.updateCart();
+  if($('.shopping-cart').is(':hidden')) {
+  	app.shoppingCartToggle();
+  }
+
 });
 
 $('.clear-cart').on('click', function () {
   app.clearCart();
 });
+
+app.updateCart();
 
