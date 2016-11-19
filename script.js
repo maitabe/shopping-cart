@@ -4,7 +4,7 @@ var bindRemoveItem = function() {
 	//remove item
 	$('.cart-list .remove').on('click', function() {
 		var itemData = $(this).parent('p').data();
-		app.removeItem(itemData);
+		shopCart.removeItem(itemData);
 	});
 };
 
@@ -139,17 +139,17 @@ var ShoppingCart = function() {
 };
 
 //call my shopping cart module
-var app = ShoppingCart();
+var shopCart = ShoppingCart();
 
 // update the cart as soon as the page loads!
-app.updateCart();
+shopCart.updateCart();
 
 
 //HANDLERS
 $('.view-cart').on('click', function () {
   // TODO: hide/show the shopping cart!
 
-  app.shoppingCartToggle();
+  shopCart.shoppingCartToggle();
 
 });
 
@@ -158,16 +158,29 @@ $('.add-to-cart').on('click', function () {
 
   var item = $(this).parent().prev().parent().data();
 
-  app.addItem(item);//push into array
-  app.updateCart();
+  shopCart.addItem(item);//push into array
+  shopCart.updateCart();
   if($('.shopping-cart').is(':hidden')) {
-  	app.shoppingCartToggle();
+  	shopCart.shoppingCartToggle();
   }
 
 });
 
 $('.clear-cart').on('click', function () {
-  app.clearCart();
+  shopCart.clearCart();
+});
+
+//modal box
+$('#add-product').on('click', function() {
+		var name = $('.name-input').val();
+		var price = $('.price-input').val();
+		var image = $('.image-input').val();
+
+		console.log('product added successfully - ' + name +', ' + '$' + price);
+
+		$('.name-input').val('');
+		$('.price-input').val('');
+		$('.image-input').val('');
 });
 
 
