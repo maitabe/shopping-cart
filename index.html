@@ -154,6 +154,10 @@
           </div>
         </div>
       </div>
+
+      <div class="new-row">
+
+      </div>
     </div>
   </div>
 
@@ -198,12 +202,31 @@
   </div>
 
   <!-- templates -->
+  <!-- shopping cart -->
   <script id="cart-template" type="text/x-handlebars-template">
         <p  data-name="{{ name }}" data-price="{{ price }}">
         <a class="remove" href="#"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
         {{ name }}  ({{ quantity}}) - $ {{ price }}
         </p>
+  </script>
 
+  <!-- adding new product -->
+  <script id="product-template" type="text/x-handlebars-template">
+      <div class="col-md-4">
+        <div class="card-container">
+          <div class="card item" item data-name="{{ name }}" data-price="{{ price }}">
+            <div class="pricebox">
+              <p class="price"> ${{ price }} </p>
+            </div>
+            <div class="buybox">
+              <p class="add-to-cart"> ADD TO CART </p>
+            </div>
+            <div class="card-inner">
+              <img src="{{ image }}" class="proimage">
+            </div>
+          </div>
+        </div>
+      </div>
   </script>
 
   <script type="text/javascript" src="node_modules/handlebars/dist/handlebars.min.js"></script>

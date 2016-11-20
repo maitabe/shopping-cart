@@ -121,3 +121,12 @@ body {
     font-weight: bolder;
 }
 
+li .btn {
+    margin-top: 9px;
+    border-color: gold;
+    background-color: transparent;
+}
+
+li .btn:hover {
+    background-color: #feca5f;
+}

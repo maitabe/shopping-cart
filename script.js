@@ -69,7 +69,7 @@ var ShoppingCart = function() {
 
 		//check if product exist
 		for (var i = 0; i < cart.length; i++) {
-			// product doesnt exist in cart
+			// product doesn't exist in cart
 		  if (item.name === cart[i].name) {
 		  		isItemExist = true;
           cart[i].quantity++;
@@ -82,7 +82,6 @@ var ShoppingCart = function() {
 			item.quantity = 1;
 			cart.push(item);
 		}
-
 
     //add price of product to total
 		total += item.price;
@@ -138,8 +137,42 @@ var ShoppingCart = function() {
 	};
 };
 
+//module for new product
+var AddNewProduct = function() {
+
+	var newProduct = [];
+
+	var updateProduct = function() {
+
+		$('.new-row').empty();
+
+		var source = $('#product-template').html();
+		var template = Handlebars.compile(source);
+
+		//fill DOM with new product array
+		for (var i = 0; i < newProduct.length; i++) {
+			  var newHtml = template(newProduct[i]);
+			  $('.new-row').append(newHtml);
+		}
+
+	};
+
+	var addProduct = function(itemProd) {
+
+		newProduct.push(itemProd);
+
+	};
+
+	return {
+		addProduct:addProduct,
+		updateProduct:updateProduct
+	};
+};
+
 //call my shopping cart module
 var shopCart = ShoppingCart();
+//call new product module
+var admin =  AddNewProduct();
 
 // update the cart as soon as the page loads!
 shopCart.updateCart();
@@ -176,13 +209,25 @@ $('#add-product').on('click', function() {
 		var price = $('.price-input').val();
 		var image = $('.image-input').val();
 
-		console.log('product added successfully - ' + name +', ' + '$' + price);
+		var product = {name:name, price:price, image:image};
 
 		$('.name-input').val('');
 		$('.price-input').val('');
 		$('.image-input').val('');
+
+		$('#myModal').modal('hide');
+
+		admin.addProduct(product);
+		admin.updateProduct();
+
+		console.log('product added successfully - ' + name +', ' + '$' + price);
+
+
 });
 
 
 
+// img
+// http://cdn1.bigcommerce.com/server3600/e392b/products/3710/images/9047/kimmidoll_maxi_doll_namie_good_fortune_11cm_TGKFSL095__95010.1446279185.1280.1280.jpg?c=2
 
+// https://cdn.shopify.com/s/files/1/0790/7429/products/YELLOW_001_e4cb28cc-b763-42a9-9a40-a6206dcf3c3d_large.png?v=1473210896
